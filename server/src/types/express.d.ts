@@ -1,11 +1,11 @@
-import { UserJwtPayload } from "../lib/middleware/verifyUser";
+import { AuthenticatedUser } from "./index";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: UserJwtPayload;
+      user?: AuthenticatedUser;
     }
   }
 }
 
-export { };
+export {};
