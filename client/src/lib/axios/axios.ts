@@ -1,16 +1,19 @@
-import axios from 'axios';
-import { userStore } from '../../state/global';
+import axios from "axios";
+import { API_BASE_URL } from "../api";
+import { userStore } from "../../state/global";
 
 const api = axios.create({
+  baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 api.interceptors.request.use((config) => {
   const { token } = userStore.getState();
   if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
+    config.headers = config.headers ?? {};
+    config.headers["Authorization"] = `Bearer ${token}`;
   }
   return config;
 });

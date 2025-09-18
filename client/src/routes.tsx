@@ -1,34 +1,32 @@
-import type { JSX } from "react";
-import Login from "./components/pages/Login";
-import AppLayout from "./components/ui/Layout/AppLayout";
-import Home from "./components/pages/Home";
-import { HomeIcon } from "lucide-react";
+import { createBrowserRouter } from "react-router-dom";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
+import AppLayout from "./components/layout/AppLayout";
+import CoursesPage from "./pages/CoursesPage";
+import CourseDetailPage from "./pages/CourseDetailPage";
+import MyLearningPage from "./pages/MyLearningPage";
+import AuthPage from "./pages/AuthPage";
 
-type Route = {
-  path: string;
-  element: JSX.Element;
-  menu?: boolean;
-  name?: string;
-  icon?: JSX.Element;
-  activeFor?: string[];
-}[]
-
-export const routes: Route = [
-  {
-    path: '*',
-    element: <div>Sorry not found</div>
-  },
+export const router = createBrowserRouter([
   {
     path: "/login",
-    element: <Login />
+    element: <AuthPage />,
   },
   {
     path: "/",
-    element: <AppLayout>
-      <Home />
-    </AppLayout>,
-    menu: true,
-    name: "Dashboard",
-    icon: <HomeIcon size={16} />,
-  }
-]
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { index: true, element: <CoursesPage /> },
+          { path: "courses/:courseId", element: <CourseDetailPage /> },
+          { path: "my-learning", element: <MyLearningPage /> },
+        ],
+      },
+    ],
+  },
+  {
+    path: "*",
+    element: <AuthPage />,
+  },
+]);

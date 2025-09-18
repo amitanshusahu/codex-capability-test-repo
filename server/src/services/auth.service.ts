@@ -1,20 +1,23 @@
 import { AppError } from "@/utils/error/errors";
 import { generateJwt } from "@/utils/jwt";
 import { prisma } from "@/utils/prisma";
+import { UserRole } from "@prisma/client";
 
-export async function loginService(email: string, password: string): Promise<string> {
-  const user = await prisma.user.findFirst({
-    where: { email, password }
+export async function loginService(email: string, password: string) {
+  const user = await prisma.user.findUnique({
+    where: { email }
   });
 
-  if (!user) {
-    throw new AppError("User not found", 400);
+  if (!user || user.password !== password) {
+    throw new AppError("Invalid email or password", 401);
   }
 
-  return generateJwt({ id: user.id, email: user.email });
+  const token = generateJwt({ id: user.id, email: user.email, role: user.role });
+
+  return { token, user };
 }
 
-export async function signupService(name: string, email: string, password: string): Promise<void> {
+export async function signupService(name: string, email: string, password: string) {
   const existingUser = await prisma.user.findUnique({
     where: { email }
   });
@@ -23,12 +26,16 @@ export async function signupService(name: string, email: string, password: strin
     throw new AppError("User already exists", 400);
   }
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       name,
       email,
       password,
-      role: 'STUDENT', // Default role for new signups
+      role: UserRole.STUDENT,
     }
   });
+
+  const token = generateJwt({ id: user.id, email: user.email, role: user.role });
+
+  return { token, user };
 }
