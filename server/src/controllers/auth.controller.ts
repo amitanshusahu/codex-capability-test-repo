@@ -1,6 +1,6 @@
-import { loginService } from "@/services/auth.service";
+import { loginService, signupService } from "@/services/auth.service";
 import { userService } from "@/services/user.service";
-import { LoginRequest } from "@/types/zod";
+import { LoginRequest, SignupRequest } from "@/types/zod";
 import { errorHandler } from "@/utils/error";
 import { Request, Response } from "express";
 
@@ -16,6 +16,21 @@ export async function loginController(req: Request, res: Response): Promise<Resp
     });
   } catch (err) {
     return errorHandler(err, "Error in loginController", res);
+  }
+}
+
+export async function signupController(req: Request, res: Response): Promise<Response> {
+  try {
+    const {name , email, password} = SignupRequest.parse(req.body);
+    const token = await signupService(name, email, password);
+
+    return res.status(201).json({
+      success: true,
+      message: "Signup successful",
+      data: { token }
+    });
+  } catch (error) {
+    return errorHandler(error, "Error in signupController", res);
   }
 }
 

@@ -7,10 +7,7 @@ async function createUsers() {
     email: string;
     role: UserRole;
   }[] = [
-      { email: 'srinulikitha526@gmail.com', role: 'STORE_INCHARGE' },
-      { email: 'anbumani@gtb.in', role: 'PROCUREMENT_MANAGER' },
-      { email: 'gopi.m@gtb.in', role: 'ACCOUNTS_MANAGER' },
-      { email: 'vijay@gtb.in', role: 'ADMIN' }
+      { email: 'admin@admin.com', role: 'ADMIN' },
     ];
 
   for (const user of users) {
@@ -18,8 +15,9 @@ async function createUsers() {
       where: { email: user.email },
       update: {},
       create: {
+        name: user.role === 'ADMIN' ? 'Admin User' : 'Student User',
         email: user.email,
-        password: 'Gtc@123',
+        password: '12345678',
         role: user.role,
       },
     });

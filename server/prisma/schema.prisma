@@ -15,100 +15,19 @@ datasource db {
 
 enum UserRole {
   ADMIN
-  STORE_INCHARGE
-  PROCUREMENT_MANAGER
-  ACCOUNTS_MANAGER
+  STUDENT
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  role      UserRole
+  id       String   @id @default(cuid())
+  name     String
+  email    String   @unique
+  password String
+  role     UserRole
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   createdBy String?
   updatedBy String?
-}
-
-enum MaterialCategory {
-  CIVIL
-  PLUMBING
-  ELECTRICAL
-  INTERIOR
-  EXTERIOR
-  OTHER
-}
-
-model MaterialInvoice {
-  id                    String           @id @default(cuid())
-  dateOfReceipt         DateTime
-  vendorName            String
-  invoiceNumber         String
-  invoiceDate           DateTime
-  deliveryChallanNumber String
-  vehicleNumber         String
-  materialCategory      MaterialCategory
-  hnsCode               String
-  uom                   String
-  vendorContactNumber   String
-  poNumber              String
-  poDate                DateTime
-  purposeOfMaterial     String
-  invoiceAttachment     String
-  mrnNumber             String
-  ginNumber             String
-
-  approved Boolean   @default(false)
-  paid     Boolean   @default(false)
-  paidOn   DateTime?
-  remarks  String?
-
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  createdBy           String?
-  updatedBy           String?
-  isActive            Boolean               @default(true)
-  InvoiceMaterialItem InvoiceMaterialItem[]
-}
-
-model InvoiceMaterialItem {
-  id                String           @id @default(cuid())
-  materialInvoiceId String
-  category          MaterialCategory
-  hnsCode           String
-  description       String
-  quantity          Float
-  ratePerUnit       Float
-  cost              Float
-
-  materialInvoice MaterialInvoice @relation(fields: [materialInvoiceId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  createdBy String?
-  updatedBy String?
-  isActive  Boolean  @default(true)
-}
-
-model DcEntry {
-  id                  String   @id @default(cuid())
-  dateOfReceipt       DateTime
-  vendorName          String
-  dcNumber            String
-  vehicleNumber       String
-  materialDescription String
-  uom                 String
-  receivedQuantity    Float
-  purposeOfMaterial   String
-  dcAttachment        String
-  bmrnNumber          String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  createdBy String?
-  updatedBy String?
-  isActive  Boolean  @default(true)
 }
